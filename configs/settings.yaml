@@ -1,0 +1,3 @@
+default:
+  vk_client:
+    token: vk1.a.*
