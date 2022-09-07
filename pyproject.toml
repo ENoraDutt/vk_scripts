@@ -11,6 +11,7 @@ python = "^3.10"
 dynaconf = "^3.1.9"
 requests = "^2.28.1"
 retry = "^0.9.2"
+pydantic = "^1.10.2"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^7.1.3"
