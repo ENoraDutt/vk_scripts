@@ -1,6 +1,6 @@
 from requests import Response, RequestException
 
-from exceptions import InvalidAccessToken
+from exceptions import InvalidAccessToken, UnknownMethodPassed
 
 
 class VkExceptionsScreamer:
@@ -10,6 +10,7 @@ class VkExceptionsScreamer:
     """
     EXCEPTIONS: Exception = [
         InvalidAccessToken,
+        UnknownMethodPassed,
     ]
 
     @classmethod
