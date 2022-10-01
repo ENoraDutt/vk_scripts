@@ -1,0 +1,34 @@
+var all_groups = Args.groups.split(",");
+var limit_posts = Args.limit_posts;
+var result = [];
+var group_index = 0;
+
+while (group_index < all_groups.length)
+{
+  var groups_post_list = [];
+  var gr = all_groups[group_index];
+  
+  var posts_index = 0;
+  groups_post_list.push(API.wall.get({"domain":gr, "count":limit_posts})["items"]);
+  var result_gp_posts = {};
+  while (posts_index < limit_posts)
+  {
+    var p_temp = {};
+    var p = groups_post_list[0][posts_index];
+    
+    p_temp.post = p;
+  
+    p_temp.id = p["id"];
+    p_temp.owner_id = p["owner_id"];
+    p_temp.from_id = p["from_id"];
+    p_temp.text = p["text"];
+    p_temp.comms = API.wall.getComments({"post_id":p["id"], "owner_id":p["owner_id"]})["items"];
+    p_temp.likes = API.likes.getList({"item_id":p["id"], "owner_id":p["owner_id"], "type":"post"})["items"];
+
+    posts_index = posts_index + 1;
+    result.push(p_temp);
+  }
+
+  group_index = group_index + 1;
+}
+return {"result": result};
