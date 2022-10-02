@@ -1,0 +1,5 @@
+default:
+  vk_client:
+    token: "vk1.a.*"
+    url: "https://api.vk.com/method/"
+    version: "5.1312"
