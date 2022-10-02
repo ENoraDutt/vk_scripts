@@ -46,6 +46,6 @@ class VkClient:
         execute_params = self.params.copy()
         execute_params["groups"] = all_groups
         execute_params["limit_posts"] = limit
-        response = self.vk_request(join="execute.getGroupsPostsFalse", params=execute_params)
+        response = self.vk_request(join="execute.getGroupsPosts", params=execute_params)
         posts = [VkPost(**post) for post in response.json()["response"]["result"]]
         return posts
