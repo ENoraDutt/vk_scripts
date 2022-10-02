@@ -1,3 +1,4 @@
+name: Pytest UNIT
 
 on:
  pull_request:
