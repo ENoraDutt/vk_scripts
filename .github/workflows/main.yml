@@ -18,4 +18,4 @@ jobs:
         python -m pip install poetry==1.2.1
         python -m poetry install
     - name: Start tests
-      run: echo test
+      run: python -m pytest --import-mode=append tests/
