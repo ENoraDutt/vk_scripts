@@ -1,7 +1,16 @@
 name: Pytest UNIT
 
 on:
-  push
+  push: 
+    branches: ["**"]
+  pull_request:
+    types:
+      - labeled
+      - opened
+      - edited
+      - reopened
+      - unlocked
+
   
 jobs:
  build:
