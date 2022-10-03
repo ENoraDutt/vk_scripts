@@ -20,8 +20,18 @@ def mock_response(mocker):
 
     return mock_response
 
+@pytest.fixture(scope="function")
+def vk_client():
+    client = VkClient(
+        screamer=VkExceptionsScreamer(),
+        url="https://api.vk.com/method/",
+        token="vk1.a",
+        version="5.1312",
+    )
+    return client
 
-def test_vk_client__get_notify(mocker, mock_response):
+
+def test_vk_client__get_notify(mocker, vk_client, mock_response):
     """ Проверяет получение постов"""
 
     groups = [Group(
@@ -31,12 +41,6 @@ def test_vk_client__get_notify(mocker, mock_response):
             people_active_exchange=["some_id"],
             url="https://vk.com/public_tasha_alx",
         )]
-    vk_client = VkClient(
-        screamer=VkExceptionsScreamer(),
-        url="https://api.vk.com/method/",
-        token="vk1.a",
-        version="5.1312",
-    )
     mocker.patch.object(vk_client, "vk_request", return_value=mock_response)
 
     result = vk_client.get_notify(groups=groups)
@@ -52,3 +56,26 @@ def test_vk_client__get_notify(mocker, mock_response):
     )
     assert isinstance(result[0], VkPost)
     assert result[0].posts == "POST"
+
+@pytest.mark.parametrize("link", [
+    ("https://vk.com/wall-1_340364", None),
+    ("https://vk.com/apiclub?w=wall-1_340364", None),
+])    
+def test_vk_client__get_post__normal_data(mocker, link, vk_client):
+   """ Проверяет получение поста по ссылке """
+   pass
+
+@pytest.mark.parametrize("link", [
+    ("https://vk.com/wall-1_122245455")
+])    
+def test_vk_client__get_post__post_not_found(link):
+    """ Проверяет обработку несуществующего поста """
+    pass
+    
+@pytest.mark.parametrize("link", [
+    ("some_fake_urlwall-1_340364")
+])    
+def test_vk_client__get_post__incorrect_link(link):
+    """ Проверяет обработку несуществующего поста """
+    pass
+
