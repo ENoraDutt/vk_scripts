@@ -1,10 +1,11 @@
+import re
 from typing import List, Dict
-from urllib.parse import urljoin, urlparse
+from urllib.parse import urljoin
 
 import requests
 from retry import retry
 
-from exceptions import InvalidAccessToken
+from exceptions import InvalidAccessToken, IncorrectLink
 from vk_exceptions_screamer import VkExceptionsScreamer
 from vk_scripts.models import Group, VkPost
 
@@ -63,15 +64,22 @@ class VkClient:
         response = self.vk_request(join="execute.getGroupsPosts", params=execute_params)
         posts = [VkPost(**post) for post in response.json()["response"]["result"]]
         return posts
-        
+
     @retry(Exception, tries=2, delay=5)
     def get_post(self, link: str):
         """
         Получает пост по ссылке
         """
-        data = urlparse(link)
-        print(data)
-        # распарсить ссылку, получить данные
-
-        
-        
+        post_id_regex = r"wall(-\d{1,}_\d{1,})"
+        post_id_list = re.findall(post_id_regex, link)
+        if post_id_list.__len__() != 1:
+            raise IncorrectLink("Post_id not parsed from link (url)")
+        get_by_id_param = self.params.copy()
+        get_by_id_param["posts"] = post_id_list[0]
+        post = self.vk_request(join="wall.getById", params=get_by_id_param).json()["response"]["items"][0]
+        return VkPost(
+            id=post["id"],
+            owner_id=post["owner_id"],
+            from_id=post["from_id"],
+            text=post["text"],
+        )

@@ -57,12 +57,14 @@ def test_vk_client__get_notify(mocker, vk_client, mock_response):
     assert isinstance(result[0], VkPost)
     assert result[0].posts == "POST"
 
-@pytest.mark.parametrize("link", [
-    ("https://vk.com/wall-1_340364", None),
-    ("https://vk.com/apiclub?w=wall-1_340364", None),
+@pytest.mark.parametrize("link, result", [
+    ("https://vk.com/wall-1_340364","-1_340364"),
+    ("https://vk.com/apiclub?w=wall-1_340364", "-1_340364"),
+    ("https://vk.com/apiclub?w=wall-1_340364%2Fall", "-1_340364"),
 ])    
-def test_vk_client__get_post__normal_data(mocker, link, vk_client):
+def test_vk_client__get_post__normal_data(mocker, link, result, vk_client):
    """ Проверяет получение поста по ссылке """
+   # vk_client = vk_client.get_post(link)
    pass
 
 @pytest.mark.parametrize("link", [
