@@ -19,7 +19,7 @@ class VkClient:
     :param version: версия vk api
     """
 
-    def __init__(self, screamer: VkExceptionsScreamer, url: str, token: str, version: int):
+    def __init__(self, screamer: VkExceptionsScreamer, url: str, token: str, version: str):
         self.params = {"access_token": token, "v": version}
         self.screamer = screamer
         self._token = token
@@ -66,9 +66,10 @@ class VkClient:
         return posts
 
     @retry(Exception, tries=2, delay=5)
-    def get_post(self, link: str):
+    def get_post(self, link: str) -> VkPost:
         """
         Получает пост по ссылке
+        :param link: ссылка на пост
         """
         post_id_regex = r"wall(-\d{1,}_\d{1,})"
         post_id_list = re.findall(post_id_regex, link)
