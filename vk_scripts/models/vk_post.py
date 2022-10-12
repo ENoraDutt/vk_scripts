@@ -8,8 +8,8 @@ class VkPost(BaseModel):
     owner_id: int
     from_id: int
     text: str
-    comms: List[Dict]
-    likes: List[int]
+    comms: List[Dict] = None
+    likes: List[int] = None
 
     class Config:
         extra = "allow"
