@@ -3,7 +3,8 @@ import pandas as pd
 from vk_scripts.vk_client import VkClient
 
 
-class SubscriptionMarathonPostParser():
+class SubscriptionMarathonPostParser:
+    LINK_RE = r"@\w{1,}"
 
     def __init__(self, vk_client: VkClient):
         self._vk_client = vk_client
@@ -11,3 +12,8 @@ class SubscriptionMarathonPostParser():
 
     def parse_post_vk(self, link: str) -> pd.DataFrame:
         post = self._vk_client.get_post(link)
+        pass
+
+    def _parse_text(self, text: str):
+        """ Парсить текст и вытаскивать оттуда ссылки + имена если есть (не обязательно, конечно, но наверное можно через vk client)"""
+        pass
