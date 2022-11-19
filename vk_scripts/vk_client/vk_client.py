@@ -84,3 +84,8 @@ class VkClient:
             from_id=post["from_id"],
             text=post["text"],
         )
+
+    @retry(Exception, tries=2, delay=5)
+    def get_title_by_at(self, at: str):
+        """ Получает имя по упомниманию через @ """
+        pass
