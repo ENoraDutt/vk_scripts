@@ -4,10 +4,7 @@ from pydantic import BaseModel
 
 
 class VkPost(BaseModel):
-    id: int
-    owner_id: int
-    from_id: int
-    text: str
+    post: Dict
     comms: List[Dict] = None
     likes: List[int] = None
 

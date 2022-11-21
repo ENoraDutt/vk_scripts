@@ -51,15 +51,14 @@ class VkClient:
         self.screamer.verify(response)
 
     @retry(Exception, tries=2, delay=5)
-    def get_notify(self, groups: List[Group], limit: int = 10) -> List[VkPost]:
+    def get_posts_from_groups(self, groups: List[str], limit: int = 10) -> List[VkPost]:
         """ 
         Получить все посты из указанных групп
-        :param groups: список групп, в которых будут проверять посты
+        :param groups: список групп, в которых будут проверять посты (short names)
         :param limit: количество постов, которые будут получены из каждой группы
         """
-        all_groups = ",".join([f'{g.short_name}' for g in groups])
         execute_params = self.params.copy()
-        execute_params["groups"] = all_groups
+        execute_params["groups"] = ",".join(groups)
         execute_params["limit_posts"] = limit
         response = self.vk_request(join="execute.getGroupsPosts", params=execute_params)
         posts = [VkPost(**post) for post in response.json()["response"]["result"]]
@@ -78,12 +77,7 @@ class VkClient:
         get_by_id_param = self.params.copy()
         get_by_id_param["posts"] = post_id_list[0]
         post = self.vk_request(join="wall.getById", params=get_by_id_param).json()["response"]["items"][0]
-        return VkPost(
-            id=post["id"],
-            owner_id=post["owner_id"],
-            from_id=post["from_id"],
-            text=post["text"],
-        )
+        return VkPost(**post)
 
     @retry(Exception, tries=2, delay=5)
     def get_title_by_at(self, at: str):

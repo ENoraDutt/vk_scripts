@@ -16,6 +16,7 @@ import pytest
 @pytest.fixture(scope="function")
 def vk_post_mock():
     return VkPost(
+        post={},
         id="123",
         owner_id="123",
         from_id="234",

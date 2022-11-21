@@ -17,11 +17,6 @@ while (group_index < all_groups.length)
     var p = groups_post_list[0][posts_index];
     
     p_temp.post = p;
-  
-    p_temp.id = p["id"];
-    p_temp.owner_id = p["owner_id"];
-    p_temp.from_id = p["from_id"];
-    p_temp.text = p["text"];
     p_temp.comms = API.wall.getComments({"post_id":p["id"], "owner_id":p["owner_id"]})["items"];
     p_temp.likes = API.likes.getList({"item_id":p["id"], "owner_id":p["owner_id"], "type":"post"})["items"];
 
