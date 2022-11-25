@@ -87,14 +87,3 @@ def test_vk_client__get_post__post_not_found(link):
 def test_vk_client__get_post__incorrect_link(link):
     """ Проверяет обработку несуществующего поста """
     pass
-
-
-def test_remove_tests():
-    client = VkClient(
-        screamer=VkExceptionsScreamer(),
-        url="https://api.vk.com/method/",
-        token="vk1.a.-ntlSVC143lcQscYYFJ4-FR3TXy_1D9MelauJOCzJ9jtRTYkGZ8h7sJHcBg9jaSWRGU8x9p_ReDd82c6Dzhtlp9HEwcatO-6r96oMlR1ATq35pfhFJ9qYLWjDzwZP1fVusG6ybuwoSehu2q9lQA806WOE-nmk23XkggXmK2FsEOX2ubxlNSNy84X7NatC2o8",
-        version="5.1312",
-    )
-    result = client.get_posts_from_groups(groups=["digridian_gold"])
-    pass
