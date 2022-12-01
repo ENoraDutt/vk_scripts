@@ -87,3 +87,12 @@ def test_vk_client__get_post__post_not_found(link):
 def test_vk_client__get_post__incorrect_link(link):
     """ Проверяет обработку несуществующего поста """
     pass
+
+
+def test_get_groups(mocker, vk_client, mock_response):
+    """ Проверяет получение групп в вк"""
+    mocker.patch.object(vk_client, "vk_request", return_value=mock_response)
+
+    groups = vk_client.get_groups()
+    assert isinstance(groups, list)
+    vk_client.vk_request.assert_called_once_with(join="groups.get")

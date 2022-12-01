@@ -7,7 +7,7 @@ from retry import retry
 
 from exceptions import InvalidAccessToken, IncorrectLink
 from vk_exceptions_screamer import VkExceptionsScreamer
-from vk_scripts.models import Group, VkPost
+from vk_scripts.models import VkPost, VkGroup
 
 
 class VkClient:
@@ -34,11 +34,13 @@ class VkClient:
         print("EXIT")
         pass
 
-    def vk_request(self, join: str, params: Dict):
+    def vk_request(self, join: str, params: Dict = {}):
         """ 
         Выполняет request и проверяет response на наличие ошибок 
         Пояснение: ошибки записываются в text, но status_code 200 
         """
+        if not params:
+            params = self.params
         response = requests.get(urljoin(self._url, join), params=params)
         self.screamer.verify(response)
         return response
@@ -53,7 +55,7 @@ class VkClient:
     @retry(Exception, tries=2, delay=5)
     def get_posts_from_groups(self, groups: List[str], limit: int = 10) -> List[VkPost]:
         """ 
-        Получить все посты из указанных групп
+        Получить все посты из указанных групп (execute.getGroupsPosts)
         :param groups: список групп, в которых будут проверять посты (short names)
         :param limit: количество постов, которые будут получены из каждой группы
         """
@@ -83,3 +85,18 @@ class VkClient:
     def get_title_by_at(self, at: str):
         """ Получает имя по упомниманию через @ """
         pass
+
+    @retry(Exception, tries=2, delay=5)
+    def get_groups(self) -> List[int]:
+        """ Получает идентификаторы групп пользователя """
+        groups = self.vk_request(join="groups.get").json()["response"]["items"]
+        return groups
+
+    @retry(Exception, tries=2, delay=5)
+    def get_groups_info(self, groups_id: List[int]):
+        """ Получает информацию о группам (в том числе пользователей) по id групп """
+
+        get_groups_param = self.params.copy()
+        get_groups_param["groups"] = ",".join([str(g) for g in groups_id])
+        groups = self.vk_request(join="execute.getGroupsInfo", params=get_groups_param).json()["response"]["result"]
+        return [VkGroup(**g) for g in groups]
