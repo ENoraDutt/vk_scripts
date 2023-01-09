@@ -1,0 +1,18 @@
+var all_groups = Args.groups;
+var result = [];
+
+
+var groups_info = API.groups.getById({"group_ids":all_groups})["groups"];
+var g_index = 0;
+
+while (g_index < groups_info.length)
+{
+  var tmp_g = {};
+  tmp_g.group = groups_info[g_index];
+  tmp_g.members = API.groups.getMembers({"group_id":groups_info[g_index].id})["items"];
+  result.push(tmp_g);
+  g_index = g_index + 1;
+}
+
+return {"result": result};
+

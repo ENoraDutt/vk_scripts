@@ -1,7 +1,7 @@
 import pytest
 
 from vk_exceptions_screamer import VkExceptionsScreamer
-from vk_scripts.models import Group, VkPost
+from vk_scripts.models import VkPost
 from vk_scripts.vk_client import VkClient
 
 
@@ -9,11 +9,7 @@ from vk_scripts.vk_client import VkClient
 def mock_response(mocker):
     mock_response = mocker.MagicMock()
     post_data = {
-        "id": 23,
-        "owner_id": 23,
-        "from_id": 23,
-        "text": "text_data",
-        "comms": [],
+        "post": {"POST": True},
         "likes": [123, 456, 789],
         "posts": "POST",
     }
@@ -36,25 +32,18 @@ def vk_client():
     return client
 
 
-def test_vk_client__get_notify(mocker, vk_client, mock_response):
+def test_vk_client__get_posts_from_groups(mocker, vk_client, mock_response):
     """ Проверяет получение постов"""
 
-    groups = [Group(
-        type="group",
-        short_name="public_tasha_alx",
-        vk_id="123",
-        people_active_exchange=["some_id"],
-        url="https://vk.com/public_tasha_alx",
-    )]
     mocker.patch.object(vk_client, "vk_request", return_value=mock_response)
 
-    result = vk_client.get_notify(groups=groups)
+    result = vk_client.get_posts_from_groups(groups=["123"])
 
     vk_client.vk_request.assert_called_once_with(
         join="execute.getGroupsPosts",
         params={
             'access_token': 'vk1.a',
-            'groups': 'public_tasha_alx',
+            'groups': '123',
             'limit_posts': 10,
             'v': '5.1312',
         }
@@ -98,3 +87,12 @@ def test_vk_client__get_post__post_not_found(link):
 def test_vk_client__get_post__incorrect_link(link):
     """ Проверяет обработку несуществующего поста """
     pass
+
+
+def test_get_groups(mocker, vk_client, mock_response):
+    """ Проверяет получение групп в вк"""
+    mocker.patch.object(vk_client, "vk_request", return_value=mock_response)
+
+    groups = vk_client.get_groups()
+    assert isinstance(groups, list)
+    vk_client.vk_request.assert_called_once_with(join="groups.get")
