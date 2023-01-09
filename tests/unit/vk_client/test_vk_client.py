@@ -9,7 +9,7 @@ from vk_scripts.vk_client import VkClient
 def mock_response(mocker):
     mock_response = mocker.MagicMock()
     post_data = {
-        "post": {},
+        "post": {"POST": True},
         "likes": [123, 456, 789],
         "posts": "POST",
     }

@@ -1,5 +1,6 @@
+import logging
 import re
-from typing import List, Dict
+from typing import List, Dict, Optional
 from urllib.parse import urljoin
 
 import requests
@@ -8,7 +9,7 @@ from retry import retry
 from exceptions import InvalidAccessToken, IncorrectLink
 from vk_exceptions_screamer import VkExceptionsScreamer
 from vk_scripts.models import VkPost, VkGroup
-
+from logging import Logger
 
 class VkClient:
     """
@@ -19,12 +20,20 @@ class VkClient:
     :param version: версия vk api
     """
 
-    def __init__(self, screamer: VkExceptionsScreamer, url: str, token: str, version: str):
+    def __init__(
+            self,
+            screamer: VkExceptionsScreamer,
+            url: str,
+            token: str,
+            version: str,
+            logger: Optional[Logger] = None
+    ):
         self.params = {"access_token": token, "v": version}
         self.screamer = screamer
         self._token = token
         self._version = version
         self._url = url
+        self._logger = logger or logging.getLogger(self.__class__.__name__)
 
     def __enter__(self):
         self._check_access_token()
@@ -63,7 +72,8 @@ class VkClient:
         execute_params["groups"] = ",".join(groups)
         execute_params["limit_posts"] = limit
         response = self.vk_request(join="execute.getGroupsPosts", params=execute_params)
-        posts = [VkPost(**post) for post in response.json()["response"]["result"]]
+        posts = [VkPost(**post) for post in response.json()["response"]["result"] if post["post"]]
+        self._logger.debug(f'Got {len(posts)} posts')
         return posts
 
     @retry(Exception, tries=2, delay=5)

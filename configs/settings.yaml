@@ -3,3 +3,8 @@ default:
     token: "vk1.a.*"
     url: "https://api.vk.com/method/"
     version: "5.1312"
+  kafka:
+    bootstrap_servers: broker
+    port: 9092
+    client_id: 1
+    topic: "kak"
